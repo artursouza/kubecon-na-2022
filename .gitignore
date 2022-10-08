@@ -1,3 +1,11 @@
+# IDE generated files and directories
+*.iml
+.idea/
+.vs/
+.vscode/
+.project
+.classpath
+.settings
 
 # Everything in the external/packages directory as nuget packages are restored here.
 /nuget/restored_packages/*
@@ -82,10 +90,31 @@ bld/
 *.vspx
 /drop
 
-# VS Code
-.vscode/
-
 # coverlet code coverage results
 coverage.json
 .fake
 .ionide
+
+# Java Output folders
+**/target/
+# Java compiled class file
+*.class
+
+# Java Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Log file
+*.log
+/syslog.txt
+
+# macOS
+.DS_Store

@@ -1,0 +1,16 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: messagebus
+spec:
+  type: bindings.discord
+  version: v1
+  metadata:
+  - name: token
+    secretKeyRef:
+      name: DISCORD_TOKEN
+      key:  DISCORD_TOKEN
+auth:
+  secretStore: env-secrets
+scopes:
+  - binding-app
