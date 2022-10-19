@@ -59,6 +59,37 @@ public class Server {
 
         server.start();
         log.info("Started server listening on " + SOCKET_PATH);
+        updateSocketPermissionInBackground(log);
         server.awaitTermination();
+    }
+
+    private static void updateSocketPermissionInBackground(Logger log) {
+        new Thread(() -> {
+            while(!Thread.currentThread().isInterrupted()) {
+                try {
+                    final File unixSocketFile = new File(SOCKET_PATH);
+                    if (unixSocketFile.exists()) {
+                        boolean success = true;
+                        if (!unixSocketFile.setReadable(true, false)) {
+                            log.error("Failed to set socket readable");
+                            success = false;
+                        }
+                        if (!unixSocketFile.setWritable(true, false)) {
+                            log.error("Failed to set socket writable");
+                            success = false;
+                        }
+                        if (success) {
+                            log.error("Successfully set socket permissions on " + SOCKET_PATH);
+                            return;
+                        }
+                    }
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    log.error("Interrupted", e);
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }).start();
     }
 }

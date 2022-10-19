@@ -2,17 +2,32 @@
 
 ## Pre-requisites
 
-* Install DotNet Core 6.X: https://dotnet.microsoft.com/en-us/download/dotnet/6.0
-* Install grpc_cli: `brew install grpc`
-* Install Node.js: https://nodejs.org/en/
+Common:
+* Make
+* Dapr CLI: https://github.com/dapr/cli or `brew install dapr/tap/dapr-cli`
+* grpc_cli: `brew install grpc`
 
-## Standalone mode
+For memstore example:
+* DotNet Core 6.X: https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+* Node.js: https://nodejs.org/en/
+
+For Discord binding example:
+* JDK 11+: https://openjdk.org/install/
+* Maven: https://maven.apache.org
+
+For Kubernetes examples:
+* Minikube for the examples on Kubernetes: https://minikube.sigs.k8s.io/docs/start/
+
+For sentiment analysis component in Azure:
+* Endpoint and Key for Azure's Cognitive Service for Language: 
 
 Clone this repo:
 ```sh
 git clone git@github.com:artursouza/kubecon-na-2022.git
 cd kubecon-na-2022
 ```
+
+## Standalone mode
 
 ### State store example
 
@@ -89,3 +104,59 @@ dapr run --app-id binding-app --app-port 3000 --components-path=./components/ --
 ```
 
 Now, go to a channel where your bot is in and send any message. You should see the same message echoed in the terminal above.
+
+## Kubernetes mode
+
+Setup Minikube:
+```sh
+make minikube-start
+```
+
+Init Dapr:
+```sh
+dapr init -k
+```
+
+Monitor state of Dapr control plane:
+```sh
+dapr status -k
+```
+
+### State store example
+
+Deploy:
+```sh
+kubctl apply -f kubernetes/memstore-example/
+```
+
+### Discord binding example
+
+Install Redis:
+```sh
+helm install redis bitnami/redis --set image.tag=6.2 
+```
+
+Create Kubernetes secret for Discord's token, based of the environment variable created previously:
+```sh
+kubectl create secret generic discord --from-literal=token=$DISCORD_TOKEN
+```
+
+Create Kubernetes secrets for the endpoint and key for Azure Cognitive Services:
+```sh
+kubectl create secret generic azure-cognitiveservices-endpoint --from-literal=value=https://<YOUR_ENDPOINT_ALIAS>.cognitiveservices.azure.com/
+kubectl create secret generic azure-cognitiveservices-subscriptionkey --from-literal=value=<YOUR_KEY_GOES_HERE>
+```
+
+Deploy:
+```sh
+kubctl apply -f kubernetes/discord-example/
+```
+
+After all PODs are running, forward the web app port:
+```sh
+kubectl port-forward services/viewer 8080
+```
+
+Then, open http://localhost:8080/
+
+Now, you can open the Discord channel and post messages. Those will show up on the web app with the sentiment analysis icon next to it.

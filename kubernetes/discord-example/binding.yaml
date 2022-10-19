@@ -1,0 +1,16 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: tweet
+auth:
+    secretStore: kubernetes
+spec:
+  type: bindings.discord
+  version: v1
+  metadata:
+  - name: token
+    secretKeyRef:
+      name: discord
+      key:  token
+scopes:
+  - provider

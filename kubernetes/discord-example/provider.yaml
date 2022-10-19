@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: provider
+  labels:
+    app: provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: provider
+  template:
+    metadata:
+      labels:
+        app: provider
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "provider"
+        dapr.io/app-port: "3000"
+        dapr.io/unix-domain-socket-path: "/tmp/dapr-components-sockets"
+    spec:
+      containers:
+      - name: provider
+        image: artursouza/twitter-sentiment-javademo-provider:latest-linux-amd64
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always
+      - name: discord
+        image: artursouza/discord-binding:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /tmp/dapr-components-sockets
+          name: dapr-unix-domain-socket
+      volumes:
+      - name: dapr-unix-domain-socket
+        emptyDir: {}
