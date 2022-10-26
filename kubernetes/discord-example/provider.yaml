@@ -18,6 +18,9 @@ spec:
         dapr.io/app-id: "provider"
         dapr.io/app-port: "3000"
         dapr.io/unix-domain-socket-path: "/tmp/dapr-components-sockets"
+        dapr.io/enable-app-health-check: "true"
+        dapr.io/config: "provider-config"
+        dapr.io/sidecar-image: "docker.io/artursouza/daprd:kubecon2022-linux-amd64"
     spec:
       containers:
       - name: provider

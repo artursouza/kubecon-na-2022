@@ -126,7 +126,24 @@ dapr status -k
 
 Deploy:
 ```sh
-kubctl apply -f kubernetes/memstore-example/
+kubectl apply -f kubernetes/memstore-example/
+```
+
+Now, watch for pods to be deployed. Notice that the nodeapp has 3 containes and not 2. One is the app, 2nd is the sidecar and 3rd is the memstore pluggable component:
+```sh
+kubectl get pods -w
+```
+
+Now, see the logs for the node app and the memstore component:
+```sh
+kubectl logs service/nodeapp node
+kubectl logs service/nodeapp memstore
+```
+
+Clean up:
+
+```sh
+kubectl delete -f kubernetes/memstore-example/
 ```
 
 ### Discord binding example
@@ -149,12 +166,17 @@ kubectl create secret generic azure-cognitiveservices-subscriptionkey --from-lit
 
 Deploy:
 ```sh
-kubctl apply -f kubernetes/discord-example/
+kubectl apply -f kubernetes/discord-example/
+```
+
+Watch for pods being deployed:
+```sh
+kubectl get pods -w
 ```
 
 After all PODs are running, forward the web app port:
 ```sh
-kubectl port-forward services/viewer 8080
+kubectl port-forward services/viewer 8080:80
 ```
 
 Then, open http://localhost:8080/

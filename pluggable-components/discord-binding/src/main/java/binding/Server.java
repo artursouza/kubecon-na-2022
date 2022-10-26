@@ -79,7 +79,7 @@ public class Server {
                             success = false;
                         }
                         if (success) {
-                            log.error("Successfully set socket permissions on " + SOCKET_PATH);
+                            log.info("Successfully set socket permissions on " + SOCKET_PATH);
                             return;
                         }
                     }
